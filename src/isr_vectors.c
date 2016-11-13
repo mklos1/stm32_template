@@ -1,4 +1,4 @@
-/* Adres wskazuje na ostatnie podwojne slowo w pamieci SRAM.
+﻿/* Adres wskazuje na ostatnie podwojne slowo w pamieci SRAM.
  * STM32F103 maja 20kB SRAM.
  */
 #include "stm32f10x.h"
@@ -80,11 +80,11 @@ void DMA2_CH2_Handler(void);
 void DMA2_CH3_Handler(void);
 void DMA2_CH45_Handler(void);
 
-extern unsigned int* _flash_data_start;
-extern unsigned int* _data_start;
-extern unsigned int* _data_end;
-extern unsigned int* _bss_start;
-extern unsigned int* _bss_end;
+extern unsigned int _flash_data_start;
+extern unsigned int _data_start;
+extern unsigned int _data_end;
+extern unsigned int _bss_start;
+extern unsigned int _bss_end;
 
 __attribute__ ((section(".isr_vectors")))
 void (*const vector_table[]) (void) = {
@@ -167,13 +167,13 @@ void (*const vector_table[]) (void) = {
 
 void Reset_Handler(void)
 {
-	unsigned int* flash = _flash_data_start;
-	unsigned int* ram = _data_start;
-	while (ram < _data_end) {
+	unsigned int* flash = &_flash_data_start;
+	unsigned int* ram = &_data_start;
+	while (ram < &_data_end) {
 		*(ram++) = *(flash++);
 	}
-	ram = _bss_start;
-	while (ram < _bss_end) {
+	ram = &_bss_start;
+	while (ram < &_bss_end) {
 		*(ram++) = 0;
 	}
 	main();
